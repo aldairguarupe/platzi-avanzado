@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ProductCollection;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
@@ -14,7 +17,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return Product::all();
+        $products = Product::all()->load('qualifiers');
+        return new ProductCollection($products);
     }
 
     /**
@@ -31,6 +35,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
+        $product = new ProductResource($product);
         return $product;
     }
 
